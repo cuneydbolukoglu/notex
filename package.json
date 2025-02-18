@@ -2,7 +2,7 @@
   "name": "notex",
   "version": "0.1.0",
   "private": true,
-  "author": "Cüneyd",
+  "author": "Cüneyd Bölükoğlu",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
