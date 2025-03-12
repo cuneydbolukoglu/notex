@@ -1,6 +1,7 @@
 import Head from "next/head";
+import withAuth from "../hoc/auth";
 
-export default function Layout({ children }) {
+function Layout({ children }) {
     return (
         <>
             <Head>
@@ -13,3 +14,5 @@ export default function Layout({ children }) {
         </>
     )
 }
+
+export default withAuth(Layout);
