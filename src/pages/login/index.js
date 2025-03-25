@@ -28,13 +28,23 @@ export default function Login() {
                 headers: { "Content-Type": "application/json" }
             });
             const idToken = response.data.idToken;
+            const refreshToken = response.data.refreshToken;
             setToken(idToken);
             utils.cookieManager.set("token", idToken);
+            utils.cookieManager.set("refreshToken", refreshToken);
             router.push("/");
         } catch (error) {
             console.error("Login error:", error);
         }
         setSubmitting(false);
+    };
+
+    const signInWithGoogle = () => {
+        const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+        const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
+        const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=openid email profile&state=random_string`;
+
+        window.location.href = GOOGLE_AUTH_URL;
     };
 
     const validationSchema = Yup.object({
@@ -96,6 +106,8 @@ export default function Login() {
                                 fullWidth
                                 sx={{ mt: 3, mb: 2 }}
                                 disabled={isSubmitting}
+                                onClick={() => signInWithGoogle()}
+                                variant="outlined"
                             >
                                 Sign in with Google
                             </Button>
