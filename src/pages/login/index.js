@@ -1,4 +1,4 @@
-import { Container, Box, Typography, TextField, FormControlLabel, Checkbox, Button, Link, Paper, Divider } from '@mui/material';
+import { Container, Typography, TextField, FormControlLabel, Checkbox, Button, Link, Paper, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import utils from '@/utils';
