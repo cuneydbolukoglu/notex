@@ -24,6 +24,38 @@ export default function App({ Component, pageProps }) {
     palette: {
       mode: themeMode === "light" ? "light" : "dark",
     },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                boxShadow: 'none',
+                '-webkit-box-shadow': 'none',
+              },
+              '&:hover fieldset': {
+                boxShadow: 'none',
+              },
+              '&.Mui-focused fieldset': {
+                boxShadow: 'none',
+              },
+              '& .MuiInputBase-input.MuiOutlinedInput-input:-webkit-autofill': {
+                backgroundColor: 'transparent',
+                color: 'inherit',
+                boxShadow: 'none',
+              },
+            },
+          },
+        },
+      }
+    },
   });
 
   return (
