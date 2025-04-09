@@ -1,0 +1,125 @@
+import { Drawer, Toolbar, Typography, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArchive, faTags, faNotesMedical } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import { useEffect, useState } from 'react';
+import axiosInstance from "@/services/axiosInstance";
+
+const drawerWidth = 240;
+
+const Sidebar = () => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
+    const [tags, setTags] = useState([]);
+
+    useEffect(() => {
+        getTags();
+    }, []);
+
+    const handleDrawerClose = () => {
+        setIsClosing(true);
+        setMobileOpen(false);
+    };
+
+    const handleDrawerTransitionEnd = () => {
+        setIsClosing(false);
+    };
+
+    const handleDrawerToggle = () => {
+        if (!isClosing) {
+            setMobileOpen(!mobileOpen);
+        }
+    };
+
+    const getTags = async () => {
+        try {
+            const response = await axiosInstance.get("/tags.json");
+            setTags(Object.values(response.data));
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+        }
+    };
+
+    const drawerContent = (
+        <div>
+            <Toolbar>
+                <Typography variant="h4">
+                    <FontAwesomeIcon icon={faNotesMedical} /> NoteX
+                </Typography>
+            </Toolbar>
+            <List>
+                <Link href='/'>
+                    <ListItem disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon={faNotesMedical} />
+                            </ListItemIcon>
+                            <ListItemText primary={"All Notes"} />
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+                <Link href='/archived-notes'>
+                    <ListItem disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon={faArchive} />
+                            </ListItemIcon>
+                            <ListItemText primary={"Archived Notes"} />
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
+            </List>
+            <Divider />
+            <Typography variant="caption">
+                Tags
+            </Typography>
+            <List>
+                {tags && tags.map((item) => (
+                    <ListItem key={item.value} disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon={faTags} />
+                            </ListItemIcon>
+                            <ListItemText primary={item.name} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
+
+    return (
+        <>
+            {/* Mobil Drawer */}
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerClose}
+                onTransitionEnd={handleDrawerTransitionEnd}
+                sx={{
+                    display: { xs: 'block', sm: 'none' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                }}
+                slotProps={{
+                    root: { keepMounted: true },
+                }}
+            >
+                {drawerContent}
+            </Drawer>
+
+            {/* Kalıcı Drawer */}
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                }}
+                open
+            >
+                {drawerContent}
+            </Drawer>
+        </>
+    );
+};
+
+export default Sidebar;
