@@ -32,7 +32,6 @@ export default function AllNotes() {
                 <Button fullWidth variant="contained">
                     <FontAwesomeIcon style={{ marginRight: 5 }} icon={faPlus} /> Create new note
                 </Button>
-
                 <Box mt={2}>
                     {allNotes.map((item, index) => (
                         <Card
@@ -67,7 +66,6 @@ export default function AllNotes() {
                     ))}
                 </Box>
             </Grid>
-
             <Grid item xs={12} sm={9}>
                 {selectedNote ? (
                     <SelectedNote
