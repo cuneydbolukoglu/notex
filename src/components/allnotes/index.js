@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faPlus, faTag } from "@fortawesome/free-solid-svg-icons";
 import axiosInstance from "@/services/axiosInstance";
 import SelectedNote from "../selectednote";
+import CreateNote from "../createnote";
 
 export default function AllNotes() {
     const [allNotes, setAllNotes] = useState([]);
     const [selectedNote, setSelectedNote] = useState(null);
+    const [createNote, setCreateNote] = useState(false);
 
     useEffect(() => {
         getAllNotes();
@@ -26,10 +28,15 @@ export default function AllNotes() {
         }
     };
 
+    const createNewNote = () => {
+        setCreateNote(true)
+        setSelectedNote(null)
+    }
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} sm={3}>
-                <Button fullWidth variant="contained">
+                <Button fullWidth variant="contained" onClick={() => createNewNote()}>
                     <FontAwesomeIcon style={{ marginRight: 5 }} icon={faPlus} /> Create new note
                 </Button>
                 <Box mt={2}>
@@ -67,15 +74,20 @@ export default function AllNotes() {
                 </Box>
             </Grid>
             <Grid item xs={12} sm={9}>
-                {selectedNote ? (
-                    <SelectedNote
-                        selectedNote={selectedNote}
-                    />
-                ) : (
-                    <Typography variant="body1" color="text.secondary">
-                        Henüz bir not seçilmedi.
-                    </Typography>
-                )}
+                {
+                    selectedNote != null &&
+                    (
+                        <SelectedNote
+                            selectedNote={selectedNote}
+                        />
+                    )
+                }
+                {
+                    createNote &&
+                    (
+                        <CreateNote />
+                    )
+                }
             </Grid>
         </Grid>
     );
