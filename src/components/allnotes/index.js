@@ -83,7 +83,7 @@ export default function AllNotes() {
                     )
                 }
                 {
-                    createNote &&
+                    selectedNote === null && createNote &&
                     (
                         <CreateNote />
                     )
