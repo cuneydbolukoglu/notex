@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Card, CardContent, Chip, Grid, Typography, Divider, Box } from "@mui/material";
+import { Button, Card, CardContent, Chip, Grid, Typography, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faPlus, faTag } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axiosInstance from "@/services/axiosInstance";
 import SelectedNote from "../selectednote";
 import CreateNote from "../createnote";
