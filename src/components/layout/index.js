@@ -5,12 +5,14 @@ import Sidebar from '../sidebar';
 
 const drawerWidth = 240;
 
-function Layout({ children }) {
+function Layout({ children, pageTitle }) {
+
     return (
         <>
             <Box sx={{ display: 'flex' }}>
                 <NavBar
                     drawerWidth={drawerWidth}
+                    pageTitle={pageTitle}
                 />
                 <Box
                     component="nav"
