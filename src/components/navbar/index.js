@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SearchBar from '../searchbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -6,7 +6,7 @@ import utils from '@/utils';
 import { useRouter } from 'next/router';
 import axiosInstance from '@/services/axiosInstance';
 
-export default function NavBar({ drawerWidth }) {
+export default function NavBar({ drawerWidth, pageTitle }) {
     const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
     const refreshToken = utils.cookieManager.get("refreshToken");
     const router = useRouter();
@@ -40,7 +40,7 @@ export default function NavBar({ drawerWidth }) {
         >
             <Toolbar>
                 <IconButton
-                    size="large"
+                    size="medium"
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
@@ -50,12 +50,12 @@ export default function NavBar({ drawerWidth }) {
                     <FontAwesomeIcon icon={faBars} />
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    NoteX
+                    {pageTitle}
                 </Typography>
                 <SearchBar />
-                <Button onClick={() => logout()}>
+                <IconButton aria-label="logout" size='small' onClick={() => logout()}>
                     <FontAwesomeIcon icon={faRightFromBracket} />
-                </Button>
+                </IconButton>
             </Toolbar>
         </AppBar>
     )

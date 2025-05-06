@@ -67,7 +67,7 @@ export default function App({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CssBaseline />
-      {isNoLayoutPage ? <Component {...pageProps} /> : <Layout><Component {...pageProps} /></Layout>}
+      {isNoLayoutPage ? <Component {...pageProps} /> : <Layout pageTitle={Component.pageTitle}><Component {...pageProps} /></Layout>}
     </ThemeProvider>
   );
 }
