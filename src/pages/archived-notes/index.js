@@ -9,7 +9,7 @@ export default function ArchivedNotes() {
     const getArchivedNotes = async () => {
         try {
             const response = await axiosInstance.get("/archived_notes.json");
-            console.log(response.data);
+            console.log(response?.data);
         } catch (error) {
             console.error("Veri çekme hatası:", error);
         }
@@ -19,3 +19,5 @@ export default function ArchivedNotes() {
         <div>Archived notes</div>
     )
 }
+
+ArchivedNotes.pageTitle = "Archived Notes";
