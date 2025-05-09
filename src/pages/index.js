@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import * as React from 'react';
-import AllNotes from "@/components/allnotes";
+import AllNotes from "@/pages/all-notes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,3 +18,5 @@ export default function Home() {
     <AllNotes />
   );
 }
+
+Home.pageTitle = "All Notes";
