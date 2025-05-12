@@ -3,14 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArchive, faTags, faNotesMedical } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
-import axiosInstance from "@/services/axiosInstance";
+import { useTagsStore } from "@/zustand";
+import EditableInput from '../editableInput';
 
 const drawerWidth = 240;
 
 const Sidebar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const [tags, setTags] = useState([]);
+    const { tags, getTags } = useTagsStore();
 
     useEffect(() => {
         getTags();
@@ -28,15 +29,6 @@ const Sidebar = () => {
     const handleDrawerToggle = () => {
         if (!isClosing) {
             setMobileOpen(!mobileOpen);
-        }
-    };
-
-    const getTags = async () => {
-        try {
-            const response = await axiosInstance.get("/tags.json");
-            setTags(Object.values(response.data));
-        } catch (error) {
-            console.error("Veri çekme hatası:", error);
         }
     };
 
@@ -74,7 +66,7 @@ const Sidebar = () => {
                 Tags
             </Typography>
             <List>
-                {tags && tags.map((item) => (
+                {tags?.map((item) => (
                     <ListItem key={item.value} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -85,6 +77,7 @@ const Sidebar = () => {
                     </ListItem>
                 ))}
             </List>
+            <EditableInput />
         </div>
     );
 
