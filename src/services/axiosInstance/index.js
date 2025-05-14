@@ -29,7 +29,7 @@ axiosInstance.interceptors.response.use(
       utils.cookieManager.delete("token");
       Router.push("/login");
     }
-    return Promise.reject(error);
+    return console.error(error) //Promise.reject(error);
   }
 );
 
