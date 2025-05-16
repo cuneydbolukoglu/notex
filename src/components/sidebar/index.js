@@ -4,18 +4,26 @@ import { faArchive, faTags, faNotesMedical } from "@fortawesome/free-solid-svg-i
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { useTagsStore } from "@/zustand";
-import EditableInput from '../editableInput';
 
 const drawerWidth = 240;
 
 const Sidebar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const [tag, setTag] = useState([]);
     const { tags, getTags } = useTagsStore();
+    const menu = [
+        { name: "All Notes", url: "/", icon: faNotesMedical },
+        { name: "Archived Notes", url: "/archived-notes", icon: faArchive }
+    ];
 
     useEffect(() => {
         getTags();
     }, []);
+
+    useEffect(() => {
+        setTag(tags);
+    }, [tags]);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -33,43 +41,35 @@ const Sidebar = () => {
     };
 
     const drawerContent = (
-        <div>
+        <>
             <Toolbar>
                 <Typography variant="h4">
                     <FontAwesomeIcon icon={faNotesMedical} /> NoteX
                 </Typography>
             </Toolbar>
             <List>
-                <Link href='/'>
-                    <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <FontAwesomeIcon icon={faNotesMedical} />
-                            </ListItemIcon>
-                            <ListItemText primary={"All Notes"} />
-                        </ListItemButton>
-                    </ListItem>
-                </Link>
-                <Link href='/archived-notes'>
-                    <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <FontAwesomeIcon icon={faArchive} />
-                            </ListItemIcon>
-                            <ListItemText primary={"Archived Notes"} />
-                        </ListItemButton>
-                    </ListItem>
-                </Link>
+                {menu?.map((item) => (
+                    <Link href={item.url}>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon style={{ fontSize: 20 }}>
+                                    <FontAwesomeIcon icon={item.icon} />
+                                </ListItemIcon>
+                                <ListItemText primary={item.name} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
+                ))}
             </List>
             <Divider />
-            <Typography variant="caption">
+            <Typography variant="caption" sx={{ px: 2, pt: 2, fontWeight: 600 }}>
                 Tags
             </Typography>
             <List>
-                {tags?.map((item) => (
+                {tag?.map((item) => (
                     <ListItem key={item.value} disablePadding>
                         <ListItemButton>
-                            <ListItemIcon>
+                            <ListItemIcon style={{ fontSize: 20 }}>
                                 <FontAwesomeIcon icon={faTags} />
                             </ListItemIcon>
                             <ListItemText primary={item.name} />
@@ -77,8 +77,7 @@ const Sidebar = () => {
                     </ListItem>
                 ))}
             </List>
-            <EditableInput />
-        </div>
+        </>
     );
 
     return (
