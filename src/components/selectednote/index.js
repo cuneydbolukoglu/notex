@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, Chip, Typography, Divider, Box, Grid, TextField, Select, MenuItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArchive, faClock, faTag, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useAllNoteStore, useTagsStore } from "@/zustand";
+import { useAllNoteStore, useTagsStore, useArchivedNoteStore } from "@/zustand";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/services/axiosInstance";
 import utils from "@/utils";
@@ -9,6 +9,7 @@ import utils from "@/utils";
 export default function SelectedNote({ selectedNote }) {
     const { removeNote, getNotes } = useAllNoteStore();
     const { tags } = useTagsStore();
+    const { archiveNote } = useArchivedNoteStore();
 
     const [editedTitle, setEditedTitle] = useState("");
     const [editedContent, setEditedContent] = useState("");
@@ -23,6 +24,10 @@ export default function SelectedNote({ selectedNote }) {
         setEditedContent(selectedNote.content);
         setEditedTags(selectedNote.tags || []);
     }, [selectedNote]);
+
+    const handleArchive = async (id) => {
+        archiveNote(id);
+    }
 
     const handleSave = async () => {
         try {
@@ -161,7 +166,7 @@ export default function SelectedNote({ selectedNote }) {
                             variant="outlined"
                             fullWidth
                             sx={{ mb: 1 }}
-                            onClick={() => console.log("Archive", selectedNote.id)}
+                            onClick={() => handleArchive(selectedNote.id)}
                             startIcon={<FontAwesomeIcon icon={faArchive} />}
                         >
                             Archive Note
