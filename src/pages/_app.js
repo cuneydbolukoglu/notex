@@ -8,17 +8,33 @@ import Head from "next/head";
 
 export default function App({ Component, pageProps }) {
   const [themeMode, setThemeMode] = useState("dark");
+  const noLayoutPages = ["/login", "/sign-up"];
   const router = useRouter();
-  const noLayoutPages = ["/login"];
+  const [isClient, setIsClient] = useState(false);
 
-  const isNoLayoutPage = noLayoutPages.includes(router.pathname);
+  // const isNoLayoutPage = noLayoutPages.includes(router.pathname);
 
   useEffect(() => {
+    setIsClient(true);
+
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setThemeMode(savedTheme);
     }
+    console.log("test");
   }, []);
+
+  useEffect(() => {
+    console.log("Router:", router);
+    console.log("Router isReady:", router.isReady);
+    console.log("Window Pathname:", typeof window !== "undefined" ? window.location.pathname : "undefined");
+  }, [router]);
+
+    // ❗ Bu kontrolü buraya alıyoruz ve güvenli hale getiriyoruz
+    const isNoLayoutPage =
+    typeof window !== "undefined" &&
+    ["/login", "/sign-up"].includes(window.location.pathname);
+
 
   const customizeTheme = createTheme({
     palette: {
@@ -57,6 +73,8 @@ export default function App({ Component, pageProps }) {
       }
     },
   });
+
+  if (!isClient) return null;
 
   return (
     <ThemeProvider theme={customizeTheme}>
