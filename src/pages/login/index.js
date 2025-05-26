@@ -1,10 +1,11 @@
-import { Container, Typography, TextField, FormControlLabel, Checkbox, Button, Link, Paper, Divider } from '@mui/material';
+import { Container, Typography, FormControlLabel, Checkbox, Button, Link, Paper, Divider, FormLabel, FormHelperText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import utils from '@/utils';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axiosInstance from '@/services/axiosInstance';
+import CustomInput from '@/components/customInput';
 
 export default function Login() {
     const [token, setToken] = useState(null);
@@ -55,7 +56,7 @@ export default function Login() {
     return (
         <Container className='auth' component="main" maxWidth="xs">
             <Paper elevation={6} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography component="h1" variant="h5">Sign in</Typography>
+                <Typography sx={{ textAlign: 'left' }} component="h1" variant="h5">Sign in</Typography>
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={validationSchema}
@@ -63,34 +64,44 @@ export default function Login() {
                 >
                     {({ isSubmitting, errors, touched }) => (
                         <Form>
-                            <Field as={TextField}
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                                error={touched.email && !!errors.email}
-                                helperText={touched.email && errors.email}
-                            />
-                            <Field as={TextField}
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                error={touched.password && !!errors.password}
-                                helperText={touched.password && errors.password}
-                            />
+
+                            <div style={{ marginBottom: 16 }}>
+                                <FormLabel htmlFor="email">Email</FormLabel>
+                                <Field
+                                    fullWidth
+                                    name="email"
+                                    id="email"
+                                    as={CustomInput}
+                                    placeholder="your@email.com"
+                                    type="email"
+                                    aria-label="email"
+                                />
+                                {touched.email && errors.email && (
+                                    <FormHelperText error>{errors.email}</FormHelperText>
+                                )}
+                            </div>
+
+                            <div style={{ marginBottom: 16 }}>
+                                <FormLabel htmlFor="password">Password</FormLabel>
+                                <Field
+                                    fullWidth
+                                    name="password"
+                                    id="password"
+                                    as={CustomInput}
+                                    placeholder="......"
+                                    type="password"
+                                    aria-label="password"
+                                />
+                                {touched.password && errors.password && (
+                                    <FormHelperText error>{errors.password}</FormHelperText>
+                                )}
+                            </div>
+
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
                             />
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -100,17 +111,25 @@ export default function Login() {
                             >
                                 Sign In
                             </Button>
+
+                            <Typography textAlign="center">
+                                Don't have an account? <Link href="/sign-up" variant="body2">Sign up</Link>
+                            </Typography>
+
                             <Link href="/forgot-password" variant="body2">Forgot password?</Link>
-                            <Divider>or</Divider>
+
+                            <Divider sx={{ my: 2 }}>or</Divider>
+
                             <Button
                                 fullWidth
-                                sx={{ mt: 3, mb: 2 }}
-                                disabled={isSubmitting}
-                                onClick={() => signInWithGoogle()}
+                                sx={{ mt: 2 }}
                                 variant="outlined"
+                                onClick={signInWithGoogle}
+                                disabled={isSubmitting}
                             >
                                 Sign in with Google
                             </Button>
+
                         </Form>
                     )}
                 </Formik>
