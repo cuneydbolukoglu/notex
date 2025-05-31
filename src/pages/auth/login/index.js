@@ -1,4 +1,4 @@
-import { Container, Typography, FormControlLabel, Checkbox, Button, Link, Paper, Divider, FormLabel, FormHelperText } from '@mui/material';
+import { Container, Typography, FormControlLabel, Checkbox, Button, Link, Paper, Divider, FormLabel, FormHelperText, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import utils from '@/utils';
@@ -28,12 +28,17 @@ export default function Login() {
             }, {
                 headers: { "Content-Type": "application/json" }
             });
-            const idToken = response.data.idToken;
-            const refreshToken = response.data.refreshToken;
+            const respData = response?.data;
+            const idToken = respData?.idToken;
+            const refreshToken = respData?.refreshToken;
+
             setToken(idToken);
             utils.cookieManager.set("token", idToken);
             utils.cookieManager.set("refreshToken", refreshToken);
-            router.push("/");
+
+            if (respData) {
+                router.push("/");
+            }
         } catch (error) {
             console.error("Login error:", error);
         }
@@ -53,18 +58,32 @@ export default function Login() {
         password: Yup.string().min(6, "Şifre en az 6 karakter olmalıdır").required("Şifre zorunludur")
     });
 
+    const forgotPassword = async (values) => {
+        const URL = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${FIREBASE_API_KEY}`;
+        try {
+            const response = await axiosInstance.post(URL, {
+                email: "cuneydbolukogluu@gmail.com",
+                requestType: "PASSWORD_RESET",
+            }, {
+                headers: { "Content-Type": "application/json" }
+            });
+
+        } catch (error) {
+            console.error("Login error:", error);
+        }
+    };
+
     return (
         <Container className='auth' component="main" maxWidth="xs">
             <Paper elevation={6} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography sx={{ textAlign: 'left' }} component="h1" variant="h5">Sign in</Typography>
+                <Typography sx={{ textAlign: 'left' }} component="h1" variant="h5">Sign In</Typography>
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={validationSchema}
                     onSubmit={signIn}
                 >
                     {({ isSubmitting, errors, touched }) => (
-                        <Form>
-
+                        <Form className='form'>
                             <div style={{ marginBottom: 16 }}>
                                 <FormLabel htmlFor="email">Email</FormLabel>
                                 <Field
@@ -113,10 +132,10 @@ export default function Login() {
                             </Button>
 
                             <Typography textAlign="center">
-                                Don't have an account? <Link href="/sign-up" variant="body2">Sign up</Link>
+                                Don't have an account? <Link href="/auth/sign-up" variant="body2">Sign up</Link>
                             </Typography>
 
-                            <Link href="/forgot-password" variant="body2">Forgot password?</Link>
+                            <Link onClick={forgotPassword} variant="body2">Forgot password?</Link>
 
                             <Divider sx={{ my: 2 }}>or</Divider>
 

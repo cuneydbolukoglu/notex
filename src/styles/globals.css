@@ -41,6 +41,10 @@ a {
   align-items: center;
 }
 
+.form {
+  width: 350px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
