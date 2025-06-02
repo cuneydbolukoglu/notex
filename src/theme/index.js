@@ -62,7 +62,6 @@ const customizeTheme = createTheme({
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    height: 40,
                     borderRadius: 8,
                     background: '#3b3b3b'
                 }
