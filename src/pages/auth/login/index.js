@@ -35,6 +35,7 @@ export default function Login() {
             setToken(idToken);
             utils.cookieManager.set("token", idToken);
             utils.cookieManager.set("refreshToken", refreshToken);
+            localStorage.setItem("user", JSON.stringify([{ displayName: respData.displayName, email: respData.email }]));
 
             if (respData) {
                 router.push("/");
