@@ -1,8 +1,8 @@
-import * as React from 'react';
+import { forwardRef } from 'react';
 import { Input as BaseInput, Select, MenuItem } from '@mui/material';
 import { styled } from '@mui/system';
 
-const Input = React.forwardRef(function CustomInput(props, ref) {
+const Input = forwardRef(function CustomInput(props, ref) {
   return <BaseInput slots={{ input: InputElement }} {...props} ref={ref} />;
 });
 
