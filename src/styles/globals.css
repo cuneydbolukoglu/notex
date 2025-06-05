@@ -45,6 +45,19 @@ a {
   width: 350px;
 }
 
+.delete-button {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.MuiListItem-root:hover .delete-button {
+  opacity: 1;
+}
+
+.MuiAutocomplete-listbox {
+  max-height: 20vh !important;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
