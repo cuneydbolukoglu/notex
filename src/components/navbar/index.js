@@ -1,25 +1,43 @@
-import { AppBar, Toolbar, Typography, IconButton, Avatar, Box, Menu, MenuItem, ListItemIcon, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Avatar, Box, Menu, MenuItem, ListItemIcon, Divider } from '@mui/material';
 import SearchBar from '../searchbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import utils from '@/utils';
 import { useRouter } from 'next/router';
 import axiosInstance from '@/services/axiosInstance';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function NavBar({ drawerWidth, pageTitle }) {
     const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
     const refreshToken = utils.cookieManager.get("refreshToken");
     const router = useRouter();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [user, setUser] = useState([]);
+    const [avatar, setAvatar] = useState(null);
     const open = Boolean(anchorEl);
 
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        setTimeout(setUser(userData), 30000);
+    }, []);
+
+    useEffect(() => {
+        user.map(item => {
+            if (!item.displayname == "") {
+                setAvatar(item.displayname.charAt(0).toUpperCase());
+            } else {
+                setAvatar(item.email.charAt(0).toUpperCase());
+            }
+        })
+    }, [user]);
+
     const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget);
     };
-    
+
     const handleClose = () => {
-      setAnchorEl(null);
+        setAnchorEl(null);
     };
 
     const logout = () => {
@@ -34,7 +52,8 @@ export default function NavBar({ drawerWidth, pageTitle }) {
             });
             utils.cookieManager.delete("token");
             utils.cookieManager.delete("refreshToken");
-            router.push("/login");
+            localStorage.removeItem("user");
+            router.push("/auth/login");
         } catch (error) {
             console.error("Login error:", error);
         }
@@ -49,8 +68,8 @@ export default function NavBar({ drawerWidth, pageTitle }) {
                 ml: { sm: `${drawerWidth}px` },
             }}
         >
-             <Toolbar>
-                 <IconButton
+            <Toolbar>
+                <IconButton
                     size="medium"
                     edge="start"
                     color="inherit"
@@ -66,9 +85,7 @@ export default function NavBar({ drawerWidth, pageTitle }) {
                 <SearchBar />
                 <IconButton aria-label="logout" size='small' onClick={() => logout()}>
                 </IconButton>
-            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-
-                <Tooltip title="Account settings">
+                <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -77,60 +94,65 @@ export default function NavBar({ drawerWidth, pageTitle }) {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>C</Avatar>
+                        <Avatar sx={{ width: 32, height: 32 }}>{avatar}</Avatar>
                     </IconButton>
-                </Tooltip>
-            </Box>
-            <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                slotProps={{
-                    paper: {
-                        elevation: 0,
-                        sx: {
-                            overflow: 'visible',
-                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                            mt: 1.5,
-                            '& .MuiAvatar-root': {
-                                width: 32,
-                                height: 32,
-                                ml: -0.5,
-                                mr: 1,
-                            },
-                            '&::before': {
-                                content: '""',
-                                display: 'block',
-                                position: 'absolute',
-                                top: 0,
-                                right: 14,
-                                width: 10,
-                                height: 10,
-                                bgcolor: 'background.paper',
-                                transform: 'translateY(-50%) rotate(45deg)',
-                                zIndex: 0,
+                </Box>
+                <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    slotProps={{
+                        paper: {
+                            elevation: 0,
+                            sx: {
+                                overflow: 'visible',
+                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                mt: 1.5,
+                                '& .MuiAvatar-root': {
+                                    width: 32,
+                                    height: 32,
+                                    ml: -0.5,
+                                    mr: 1,
+                                },
+                                '&::before': {
+                                    content: '""',
+                                    display: 'block',
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 14,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(-50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
                             },
                         },
-                    },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <FontAwesomeIcon icon={faGear} />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem onClick={logout}>
-                    <ListItemIcon>
-                        <FontAwesomeIcon icon={faRightFromBracket} />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
-            </Menu>
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                    <MenuItem onClick={handleClose} disabled>
+                        {user[0]?.displayName || user[0]?.email}
+                    </MenuItem>
+                    <Divider />
+                    <Link href="/profile">
+                        <MenuItem onClick={handleClose}>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon={faGear} />
+                            </ListItemIcon>
+                            Profile
+                        </MenuItem>
+                    </Link>
+                    <MenuItem onClick={logout}>
+                        <ListItemIcon>
+                            <FontAwesomeIcon icon={faRightFromBracket} />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                </Menu>
             </Toolbar>
         </AppBar>
     )
