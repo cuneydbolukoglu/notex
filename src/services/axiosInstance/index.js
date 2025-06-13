@@ -1,6 +1,7 @@
 import axios from "axios";
 import utils from '@/utils';
 import Router from "next/router";
+import { triggerGlobalError } from "@/utils/errorManager";
 
 const API = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL;
 
@@ -27,9 +28,12 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.warn("Yetkisiz erişim! Kullanıcı giriş ekranına yönlendiriliyor...");
       utils.cookieManager.delete("token");
-      Router.push("/login");
+      Router.push("/auth/login");
     }
-    return console.error(error) //Promise.reject(error);
+    if (typeof error.response.data.error == 'string') {
+      triggerGlobalError(error.response.data.error);
+    } else triggerGlobalError(error.response.data.error.message);
+    return console.log(error) //Promise.reject(error);
   }
 );
 
