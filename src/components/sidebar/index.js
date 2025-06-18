@@ -1,9 +1,10 @@
-import { Drawer, Toolbar, Typography, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Drawer, Toolbar, Typography, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArchive, faTags, faNotesMedical } from "@fortawesome/free-solid-svg-icons";
+import { faArchive, faTags, faNotesMedical, faTrash, faNoteSticky, faStar } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { useTagsStore } from "@/zustand";
+import { usePathname } from 'next/navigation';
 
 const drawerWidth = 240;
 
@@ -11,11 +12,13 @@ const Sidebar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const [tag, setTag] = useState([]);
-    const { tags, getTags } = useTagsStore();
+    const { tags, getTags, removeTags } = useTagsStore();
     const menu = [
-        { name: "All Notes", url: "/", icon: faNotesMedical },
-        { name: "Archived Notes", url: "/archived-notes", icon: faArchive }
+        { name: "All Notes", url: "/", icon: faNoteSticky },
+        { name: "Archived Notes", url: "/archived-notes", icon: faArchive },
+        { name: "Trash Box", url: "/trash-box", icon: faTrash },
     ];
+    const pathname = usePathname();
 
     useEffect(() => {
         getTags();
@@ -48,26 +51,53 @@ const Sidebar = () => {
                 </Typography>
             </Toolbar>
             <List>
-                {menu?.map((item) => (
-                    <Link href={item.url}>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon style={{ fontSize: 20 }}>
-                                    <FontAwesomeIcon icon={item.icon} />
-                                </ListItemIcon>
-                                <ListItemText primary={item.name} />
-                            </ListItemButton>
-                        </ListItem>
-                    </Link>
-                ))}
+                {menu?.map((item) => {
+                    const isActive = pathname === item.url;
+
+                    return (
+                        <Link href={item.url} key={item.url} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <ListItem disablePadding>
+                                <ListItemButton
+                                    selected={isActive}
+                                    sx={{
+                                        '&.Mui-selected': {
+                                            backgroundColor: '#1e1e1e',
+                                            color: 'white',
+                                        },
+                                        '&.Mui-selected:hover': {
+                                            backgroundColor: '#ffffff14',
+                                        }
+                                    }}
+                                >
+                                    <ListItemIcon style={{ fontSize: 20 }}>
+                                        <FontAwesomeIcon icon={item.icon} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.name} />
+                                </ListItemButton>
+                            </ListItem>
+                        </Link>
+                    )
+                })}
             </List>
             <Divider />
             <Typography variant="caption" sx={{ px: 2, pt: 2, fontWeight: 600 }}>
                 Tags
             </Typography>
             <List>
-                {tag?.map((item) => (
-                    <ListItem key={item.value} disablePadding>
+                {tag?.map((item, index) => (
+                    <ListItem
+                        key={item.value}
+                        disablePadding
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete" className="delete-button" 
+                            onClick={() => {
+                                removeTags(item.id);
+                                getTags()
+                            }}>
+                                <FontAwesomeIcon icon={faTrash} size='2xs' />
+                            </IconButton>
+                        }
+                    >
                         <ListItemButton>
                             <ListItemIcon style={{ fontSize: 20 }}>
                                 <FontAwesomeIcon icon={faTags} />
