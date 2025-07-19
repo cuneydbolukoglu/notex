@@ -1,58 +1,62 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
-import { Bold, Italic, Underline as UnderlineIcon, Heading1, List, ListOrdered } from "lucide-react"; // Veya başka bir ikon kütüphanesi
+import {
+  Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  Heading1,
+  List,
+  ListOrdered,
+} from "lucide-react";
 
-// Toolbar Düğmeleri
+// Toolbar Bileşeni
 const MenuBar = ({ editor }) => {
   if (!editor) return null;
 
+  const buttonClass = (active) =>
+    active ? "bg-gray-200 p-1 rounded" : "p-1";
+
   return (
     <div className="flex flex-wrap gap-2 mb-2">
-      {/* Bold */}
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={editor.isActive("bold") ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("bold"))}
       >
         <Bold size={18} />
       </button>
 
-      {/* Italic */}
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={editor.isActive("italic") ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("italic"))}
       >
         <Italic size={18} />
       </button>
 
-      {/* Underline */}
       <button
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={editor.isActive("underline") ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("underline"))}
       >
         <UnderlineIcon size={18} />
       </button>
 
-      {/* Heading 1 */}
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={editor.isActive("heading", { level: 1 }) ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("heading", { level: 1 }))}
       >
         <Heading1 size={18} />
       </button>
 
-      {/* Bullet List */}
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive("bulletList") ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("bulletList"))}
       >
         <List size={18} />
       </button>
 
-      {/* Ordered List */}
       <button
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive("orderedList") ? "bg-gray-200 p-1 rounded" : "p-1"}
+        className={buttonClass(editor.isActive("orderedList"))}
       >
         <ListOrdered size={18} />
       </button>
@@ -61,19 +65,39 @@ const MenuBar = ({ editor }) => {
 };
 
 // Ana Editor Bileşeni
-export default function NoteEditor() {
+export default function NoteEditor({
+  value,
+  onChange,
+  onBlur,
+  onKeyDown,
+  autoFocus = false,
+  multiline = false,
+  rows = 1,
+}) {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline, // Underline eklentisini ekledik
-    ],
-    content: "<p>Bu bir örnek metin. <strong>Bold</strong>, <em>italic</em> veya <u>underline</u> yapabilirsiniz.</p>",
+    extensions: [StarterKit, Underline],
+    content: value,
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      onChange?.(html);
+    },
+    autofocus: autoFocus,
   });
 
+  if (!editor) return null;
+
   return (
-    <div className="editor-container border rounded p-4">
+    <div
+      className="editor-container border rounded p-4"
+      onBlur={onBlur}
+      onKeyDown={(e) => {
+        if (onKeyDown) onKeyDown(e);
+        if (e.key === "Enter" && !multiline) onBlur?.();
+      }}
+      style={{ minHeight: multiline ? `${rows * 24}px` : "auto" }}
+    >
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} className="min-h-[200px]" />
+      <EditorContent editor={editor} />
     </div>
   );
 }
