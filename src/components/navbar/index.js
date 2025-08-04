@@ -135,7 +135,7 @@ export default function NavBar({ drawerWidth, pageTitle }) {
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                     <MenuItem onClick={handleClose} disabled>
-                        {user[0]?.displayName || user[0]?.email}
+                        {user?.[0]?.displayName || user?.[0]?.email}
                     </MenuItem>
                     <Divider />
                     <Link href="/profile">

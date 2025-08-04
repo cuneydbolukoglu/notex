@@ -41,7 +41,7 @@ export default function AutocompleteTagSelect({ value, onChange, options }) {
         <Fragment>
             <Autocomplete
                 multiple
-                value={options.filter(opt => (value || []).includes(opt.value))}
+                value={options?.filter(opt => (value || []).includes(opt.value))}
                 onChange={(event, newValue) => {
                     const lastItem = newValue[newValue.length - 1];
 

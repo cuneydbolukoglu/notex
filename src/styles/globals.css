@@ -63,3 +63,14 @@ a {
     color-scheme: dark;
   }
 }
+
+.editor-menu-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.editor-menu-bar button {
+  margin-right: 10px;
+}
