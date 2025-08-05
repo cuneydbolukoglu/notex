@@ -1,15 +1,16 @@
 import { Button, Card, CardContent, Chip, Typography, Divider, Box, Grid, TextField, Select, MenuItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArchive, faClock, faTag, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArchive, faClock, faNoteSticky, faTag, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAllNoteStore, useTagsStore, useArchivedNoteStore } from "@/zustand";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/services/axiosInstance";
 import utils from "@/utils";
+import NoteEditor from "../noteEditor";
 
-export default function SelectedNote({ selectedNote }) {
+export default function SelectedNote({ selectedNote, archivedNote }) {
     const { removeNote, getNotes } = useAllNoteStore();
     const { tags } = useTagsStore();
-    const { archiveNote } = useArchivedNoteStore();
+    const { archiveNote, removeArchiveNote, archiveNoteBack } = useArchivedNoteStore();
 
     const [editedTitle, setEditedTitle] = useState("");
     const [editedContent, setEditedContent] = useState("");
@@ -51,27 +52,35 @@ export default function SelectedNote({ selectedNote }) {
         setIsEditingTags(false);
     };
 
-
     const renderEditableText = ({
         isEditing,
         value,
         setValue,
         onFinishEdit,
         multiline = false,
-        variant = "h5"
-    }) => isEditing ? (
-        <TextField
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={onFinishEdit}
-            onKeyDown={(e) => e.key === "Enter" && !multiline && onFinishEdit()}
-            autoFocus
-            fullWidth
-            variant="outlined"
-            multiline={multiline}
-            rows={multiline ? 6 : 1}
-        />
-    ) : (
+        variant = "h5",
+        setIsEditing, // dışarıdan prop olarak alınmalı
+    }) => {
+        if (isEditing) {
+            return (
+                <NoteEditor
+                    value={value}
+                    onChange={setValue}
+                    onBlur={onFinishEdit}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !multiline && !e.shiftKey) {
+                            e.preventDefault();
+                            onFinishEdit();
+                        }
+                    }}
+                    autoFocus
+                    multiline={multiline}
+                    rows={multiline ? 6 : 1}
+                />
+            );
+        }
+
+        return (
             <Typography
                 onClick={() => {
                     if (variant === "h5") setIsEditingTitle(true);
@@ -80,9 +89,43 @@ export default function SelectedNote({ selectedNote }) {
                 sx={{ cursor: "pointer", mb: variant === "h5" ? 3 : 0 }}
                 variant={variant}
             >
-                {value}
+                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: value }} />
             </Typography>
         );
+    };
+
+    const renderEditableSelect = ({
+        isEditing,
+        value,
+        onChange,
+        onFinishEdit,
+        options = [],
+    }) => isEditing ? (
+        <Select
+            multiple
+            fullWidth
+            value={value}
+            onChange={onChange}
+            onClose={onFinishEdit}
+            autoFocus
+        >
+            {options.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                    {option.name}
+                </MenuItem>
+            ))}
+        </Select>
+    ) : (
+            value.map((tag, index) => (
+                <Chip
+                    key={index}
+                    label={tag}
+                    onClick={() => setIsEditingTags(true)}
+                    sx={{ mr: 1, mb: 1, borderRadius: 1, height: 25 }}
+                />
+            ))
+        );
+
 
     return (
         <Grid container spacing={2}>
@@ -101,29 +144,14 @@ export default function SelectedNote({ selectedNote }) {
                             <Typography variant="subtitle2" sx={{ display: "inline", mr: 1 }}>
                                 <FontAwesomeIcon icon={faTag} /> Tags:
                             </Typography>
-                            {isEditingTags ? (
-                                <Select
-                                    multiple
-                                    fullWidth
-                                    value={editedTags}
-                                    onChange={(e) => setEditedTags(e.target.value)}
-                                >
-                                    {tags?.map((tag) => (
-                                        <MenuItem key={tag.value} value={tag.value}>
-                                            {tag.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            ) : (
-                                editedTags.map((tag, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={tag}
-                                        onClick={() => setIsEditingTags(true)}
-                                        sx={{ mr: 1, mb: 1, borderRadius: 1, height: 25 }}
-                                    />
-                                ))
-                            )}
+
+                            {renderEditableSelect({
+                                isEditing: isEditingTags,
+                                value: editedTags,
+                                onChange: (e) => setEditedTags(e.target.value),
+                                onFinishEdit: () => setIsEditingTags(false),
+                                options: tags,
+                            })}
                         </Box>
 
                         <Typography variant="body2" color="text.secondary" mb={2}>
@@ -140,8 +168,6 @@ export default function SelectedNote({ selectedNote }) {
                             multiline: true,
                             variant: "body1"
                         })}
-
-                        <Divider sx={{ my: 2 }} />
 
                         <Box mt={3}>
                             <Button
@@ -162,19 +188,32 @@ export default function SelectedNote({ selectedNote }) {
             <Grid item xs={12} sm={3}>
                 <Card sx={{ p: 2 }} style={{ height: '100%' }}>
                     <Box>
+                        {
+                            archivedNote ?
+                                <Button
+                                    variant="outlined"
+                                    fullWidth
+                                    sx={{ mb: 1 }}
+                                    onClick={() => archiveNoteBack(selectedNote.id)}
+                                    startIcon={<FontAwesomeIcon icon={faNoteSticky} />}
+                                >
+                                    Undo
+                                </Button>
+                                :
+                                <Button
+                                    variant="outlined"
+                                    fullWidth
+                                    sx={{ mb: 1 }}
+                                    onClick={() => handleArchive(selectedNote.id)}
+                                    startIcon={<FontAwesomeIcon icon={faArchive} />}
+                                >
+                                    Archive Note
+                                </Button>
+                        }
                         <Button
                             variant="outlined"
                             fullWidth
-                            sx={{ mb: 1 }}
-                            onClick={() => handleArchive(selectedNote.id)}
-                            startIcon={<FontAwesomeIcon icon={faArchive} />}
-                        >
-                            Archive Note
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            fullWidth
-                            onClick={() => removeNote(selectedNote.id)}
+                            onClick={() => archivedNote ? removeArchiveNote(selectedNote.id) : removeNote(selectedNote.id)}
                             startIcon={<FontAwesomeIcon icon={faTrash} />}
                         >
                             Delete Note

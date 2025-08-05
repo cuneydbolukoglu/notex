@@ -1,9 +1,12 @@
-import { Button, Card, CardContent, Divider, Box, TextField, Typography, InputLabel, FormControl, Select, MenuItem, OutlinedInput } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Button, Card, CardContent, Divider, Box, Typography, FormLabel, FormHelperText, Stack } from "@mui/material";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axiosInstance from "@/services/axiosInstance";
 import utils from "@/utils";
 import { useAllNoteStore, useTagsStore } from "@/zustand";
+import CustomInput from '@/components/customInput';
+import AutocompleteSelect from '@/components/autoCompleteSelect';
+import NoteEditor from "../noteEditor";
 
 export default function CreateNote() {
   const { getNotes } = useAllNoteStore();
@@ -43,58 +46,56 @@ export default function CreateNote() {
               <Typography
                 variant="h5"
                 color="text.secondary"
-                sx={{ marginTop: 1 }}
+                sx={{ marginTop: 1, marginBottom: 3 }}
               >
                 Create Note
               </Typography>
-              <TextField
+              <FormLabel htmlFor="title">Title</FormLabel>
+              <Field
                 fullWidth
-                margin="normal"
                 id="title"
                 name="title"
                 label="Title"
+                as={CustomInput}
                 value={values.title}
                 onChange={handleChange}
                 error={touched.title && Boolean(errors.title)}
                 helperText={touched.title && errors.title}
               />
+              {touched.title && errors.title && (
+                <FormHelperText error>{errors.title}</FormHelperText>
+              )}
 
               <Divider sx={{ my: 2 }} />
 
-              <Box display="flex" alignItems="center" mb={2}>
-                <FormControl fullWidth>
-                  <InputLabel id="tags-label">Tags</InputLabel>
-                  <Select
-                    labelId="tags-label"
-                    id="tags"
-                    name="tags"
-                    multiple
-                    value={values.tags}
-                    onChange={handleChange}
-                    input={<OutlinedInput label="Tags" />}
-                  >
-                    {tags.map((tag) => (
-                      <MenuItem key={tag.value} value={tag.value}>
-                        {tag.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <TextField
-                fullWidth
-                multiline
-                rows={7}
-                id="content"
-                name="content"
-                label="Write your note..."
-                value={values.content}
+              <FormLabel htmlFor="tags">Tags</FormLabel>
+              <Field
+                as={AutocompleteSelect}
+                value={values.tags}
                 onChange={handleChange}
-                error={touched.content && Boolean(errors.content)}
-                helperText={touched.content && errors.content}
+                options={tags?.map(tag => ({
+                  value: tag.value,
+                  name: tag.name
+                }))}
               />
+              {touched.tags && errors.tags && (
+                <FormHelperText error>{errors.tags}</FormHelperText>
+              )}
 
+              <FormLabel htmlFor="content">Content</FormLabel>
+              <Field name="content">
+                {({ field, form }) => (
+                  <>
+                    <NoteEditor
+                      value={field.value}
+                      onChange={(val) => form.setFieldValue(field.name, val)}
+                    />
+                    {form.touched.content && form.errors.content && (
+                      <FormHelperText error>{form.errors.content}</FormHelperText>
+                    )}
+                  </>
+                )}
+              </Field>
               <Box mt={3} display="flex" gap={1}>
                 <Button variant="contained" type="submit">
                   Create
