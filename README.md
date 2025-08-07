@@ -1,28 +1,34 @@
-# 📝 NoteX - Not Uygulaması
+<div align="center">
+  <h1>📝 NoteX</h1>
+  <p><strong>Hızlı ve kolay not alma deneyimi sunan açık kaynaklı bir web uygulaması.</strong></p>
+  <p>Modern teknolojilerle geliştirilmiş kullanıcı dostu bir not çözümüdür.</p>
 
-**NoteX**, hızlı ve kolay not alma deneyimi sunan açık kaynaklı bir web uygulamasıdır.  
-Modern teknolojilerle geliştirilmiş kullanıcı dostu arayüzü ve esnek yapısı sayesinde herkes için kullanımı kolay bir not çözümüdür.
+  <img src="./screenshots/preview.png" alt="NoteX Preview" width="100%" />
 
-## 🚀 Özellikler
+  <br />
+  <a href="#features">Özellikler</a> •
+  <a href="#installation">Kurulum</a> •
+  <a href="#technologies">Teknolojiler</a> •
+  <a href="#contributing">Katkı</a> •
+  <a href="#license">Lisans</a>
+</div>
 
-- **Zustand** ile global state yönetimi  
-- **Formik** & **Yup** ile gelişmiş form doğrulama  
-- **Material UI** ile şık ve modern arayüz  
-- **Axios** ile API istekleri  
-- **Next.js** ile SSR destekli hızlı performans  
-- **FontAwesome** ikonlarıyla zengin görsellik  
-- **Açık kaynak** ve geliştirilmeye açık
+---
 
-## 🖥️ Masaüstü Versiyonu (Yakın 🚧)
+## ✨ Özellikler
 
-Projenin ilerleyen aşamalarında **Express.js** kullanılarak geliştirilecek masaüstü uygulamasıyla offline kullanım ve yerel veri senkronizasyonu desteklenecektir.  
-Bu özellik şu anda geliştirme aşamasındadır.
+- ⚛️ React + Next.js tabanlı hızlı performans
+- 🧠 Zustand ile global state yönetimi
+- ✅ Formik + Yup ile form doğrulama
+- 🎨 Material UI ile modern arayüz
+- 🌐 Axios ile API istekleri
+- 🎯 FontAwesome ikonları
+- 🖥️ Yakında: Express.js ile masaüstü sürüm
+- 🛠️ Açık kaynak ve geliştirilebilir yapı
 
-## 📸 Ekran Görüntüleri
+---
 
-> [Eklenecek ekran görüntüleri – örn. `./screenshots/home.png`]
-
-## 🔧 Kurulum
+## 🚀 Kurulum
 
 ### 1. Depoyu klonlayın
 
@@ -53,9 +59,20 @@ npm run dev
 http://localhost:3000
 ```
 
-## 📁 Teknolojiler
+---
+
+## 🖼️ Ekran Görüntüleri
+
+| Ana Sayfa | Not Ekle |
+|----------|----------|
+| ![Ana Sayfa](./screenshots/home.png) | ![Not Ekle](./screenshots/add-note.png) |
+
+---
+
+## 🧰 Teknolojiler
 
 - [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
 - [Formik](https://formik.org/)
 - [Yup](https://github.com/jquense/yup)
 - [Zustand](https://github.com/pmndrs/zustand)
@@ -63,20 +80,39 @@ http://localhost:3000
 - [Material UI](https://mui.com/)
 - [FontAwesome](https://fontawesome.com/)
 
-## 🧑‍💻 Katkı Sağlayın
+---
 
-Katkıda bulunmak isterseniz:
+## 🤝 Katkıda Bulun
 
-1. Fork'layın 🍴
+Katkı sağlamak isterseniz:
+
+1. Bu repoyu fork'layın
 2. Yeni bir branch oluşturun: `git checkout -b feature/yenilik`
 3. Değişiklikleri commit'leyin: `git commit -m 'Yeni bir özellik ekledim'`
-4. Push'layın: `git push origin feature/yenilik`
-5. Pull request açın
-
-## 📄 Lisans
-
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+4. Branch’i push’layın: `git push origin feature/yenilik`
+5. Bir pull request (PR) oluşturun
 
 ---
 
-> ✨ NoteX, open source dünyasında katkıya açık bir projedir. Desteklemek için projeye ⭐ vermeyi unutmayın!
+## 📦 Masaüstü Sürüm (Yakında)
+
+NoteX'in masaüstü versiyonu **Express.js** ile geliştirilmektedir. Bu sayede:
+
+- 📡 Offline kullanım
+- 💾 Yerel veri saklama
+- 🔒 Gelişmiş güvenlik
+
+gibi özellikler desteklenecektir.
+
+---
+
+## 📄 Lisans
+
+MIT Lisansı – detaylar için [LICENSE](./LICENSE) dosyasına göz atın.
+
+---
+
+<div align="center">
+  <strong>⭐ Projeyi beğendiyseniz yıldız vererek destek olabilirsiniz!</strong><br/>
+  Geri bildirim ve katkılarınız memnuniyetle karşılanır.
+</div>
