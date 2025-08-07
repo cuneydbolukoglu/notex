@@ -5,15 +5,15 @@ Modern teknolojilerle geliştirilmiş kullanıcı dostu arayüzü ve esnek yapı
 
 ## 🚀 Özellikler
 
-- 🧠 **Zustand** ile global state yönetimi  
-- ✅ **Formik** & **Yup** ile gelişmiş form doğrulama  
-- 💅 **Material UI** ile şık ve modern arayüz  
-- ⚡ **Axios** ile API istekleri  
-- 🌐 **Next.js** ile SSR destekli hızlı performans  
-- 🎨 **FontAwesome** ikonlarıyla zengin görsellik  
-- 🛠️ **Açık kaynak** ve geliştirilmeye açık
+- **Zustand** ile global state yönetimi  
+- **Formik** & **Yup** ile gelişmiş form doğrulama  
+- **Material UI** ile şık ve modern arayüz  
+- **Axios** ile API istekleri  
+- **Next.js** ile SSR destekli hızlı performans  
+- **FontAwesome** ikonlarıyla zengin görsellik  
+- **Açık kaynak** ve geliştirilmeye açık
 
-## 🖥️ Masaüstü Versiyonu (Yolda 🚧)
+## 🖥️ Masaüstü Versiyonu (Yakın 🚧)
 
 Projenin ilerleyen aşamalarında **Express.js** kullanılarak geliştirilecek masaüstü uygulamasıyla offline kullanım ve yerel veri senkronizasyonu desteklenecektir.  
 Bu özellik şu anda geliştirme aşamasındadır.
