@@ -1,40 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 📝 NoteX - Not Uygulaması
 
-## Getting Started
+**NoteX**, hızlı ve kolay not alma deneyimi sunan açık kaynaklı bir web uygulamasıdır.  
+Modern teknolojilerle geliştirilmiş kullanıcı dostu arayüzü ve esnek yapısı sayesinde herkes için kullanımı kolay bir not çözümüdür.
 
-First, run the development server:
+## 🚀 Özellikler
+
+- 🧠 **Zustand** ile global state yönetimi  
+- ✅ **Formik** & **Yup** ile gelişmiş form doğrulama  
+- 💅 **Material UI** ile şık ve modern arayüz  
+- ⚡ **Axios** ile API istekleri  
+- 🌐 **Next.js** ile SSR destekli hızlı performans  
+- 🎨 **FontAwesome** ikonlarıyla zengin görsellik  
+- 🛠️ **Açık kaynak** ve geliştirilmeye açık
+
+## 🖥️ Masaüstü Versiyonu (Yolda 🚧)
+
+Projenin ilerleyen aşamalarında **Express.js** kullanılarak geliştirilecek masaüstü uygulamasıyla offline kullanım ve yerel veri senkronizasyonu desteklenecektir.  
+Bu özellik şu anda geliştirme aşamasındadır.
+
+## 📸 Ekran Görüntüleri
+
+> [Eklenecek ekran görüntüleri – örn. `./screenshots/home.png`]
+
+## 🔧 Kurulum
+
+### 1. Depoyu klonlayın
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/kullaniciadi/notex.git
+cd notex
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Bağımlılıkları yükleyin
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```bash
+yarn install
+# veya
+npm install
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### 3. Uygulamayı başlatın
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+yarn dev
+# veya
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Tarayıcıda açın
 
-## Learn More
+```
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Teknolojiler
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+- [Next.js](https://nextjs.org/)
+- [Formik](https://formik.org/)
+- [Yup](https://github.com/jquense/yup)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Axios](https://axios-http.com/)
+- [Material UI](https://mui.com/)
+- [FontAwesome](https://fontawesome.com/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧑‍💻 Katkı Sağlayın
 
-## Deploy on Vercel
+Katkıda bulunmak isterseniz:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork'layın 🍴
+2. Yeni bir branch oluşturun: `git checkout -b feature/yenilik`
+3. Değişiklikleri commit'leyin: `git commit -m 'Yeni bir özellik ekledim'`
+4. Push'layın: `git push origin feature/yenilik`
+5. Pull request açın
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## 📄 Lisans
+
+Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+
+---
+
+> ✨ NoteX, open source dünyasında katkıya açık bir projedir. Desteklemek için projeye ⭐ vermeyi unutmayın!

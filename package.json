@@ -1,5 +1,6 @@
 {
   "name": "notex",
+  "description": "NoteX Applicaton",
   "version": "0.1.0",
   "private": true,
   "author": "Cüneyd Bölükoğlu",
