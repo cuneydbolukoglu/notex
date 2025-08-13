@@ -48,7 +48,8 @@ export default function Login() {
     const signInWithGoogle = () => {
         const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
         const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
-        const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=openid email profile&state=random_string`;
+        // const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=openid email profile&state=random_string`;
+        const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=id_token%20token&scope=openid%20email%20profile&state=random_string&nonce=random_nonce`;
 
         window.location.href = GOOGLE_AUTH_URL;
     };

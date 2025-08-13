@@ -23,7 +23,7 @@ export default function NavBar({ drawerWidth, pageTitle }) {
     }, []);
 
     useEffect(() => {
-        user.map(item => {
+        user?.map(item => {
             if (!item.displayname == "") {
                 setAvatar(item.displayname.charAt(0).toUpperCase());
             } else {
