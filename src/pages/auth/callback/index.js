@@ -4,56 +4,75 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/services/axiosInstance";
 import utils from "@/utils";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const signInWithGoogleToken = async (googleIdToken) => {
-  const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-  const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
+    const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
 
-  try {
-    const URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${FIREBASE_API_KEY}`;
+    try {
+        const URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${FIREBASE_API_KEY}`;
 
-    const response = await axiosInstance.post(
-      URL,
-      {
-        postBody: `id_token=${googleIdToken}&providerId=google.com`,
-        requestUri: REDIRECT_URI,
-        returnIdpCredential: true,
-        returnSecureToken: true,
-      },
-      { headers: { "Content-Type": "application/json" } }
-    );
+        const response = await axiosInstance.post(
+            URL,
+            {
+                postBody: `id_token=${googleIdToken}&providerId=google.com`,
+                requestUri: REDIRECT_URI,
+                returnIdpCredential: true,
+                returnSecureToken: true,
+            },
+            { headers: { "Content-Type": "application/json" } }
+        );
 
-    const { idToken, refreshToken } = response.data;
-    console.log("Firebase Response:", response.data);
+        const respData = response?.data;
 
-    // Tokenları sakla
-    utils.cookieManager.set("token", idToken);
-    utils.cookieManager.set("refreshToken", refreshToken);
+        const { idToken, refreshToken } = respData;
 
-    return idToken;
-  } catch (error) {
-    console.error("Firebase Sign-In Error:", error.response?.data || error.message);
-  }
+        utils.cookieManager.set("token", idToken);
+        utils.cookieManager.set("refreshToken", refreshToken);
+        localStorage.setItem("user", JSON.stringify([{ displayName: respData.displayName, email: respData.email }]));
+
+        return idToken;
+    } catch (error) {
+        console.error("Firebase Sign-In Error:", error.response?.data || error.message);
+    }
 };
 
 const GoogleCallback = () => {
-  const router = useRouter();
+    const router = useRouter();
 
-  useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const googleIdToken = hashParams.get("id_token"); // Artık direkt geliyor
+    useEffect(() => {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const googleIdToken = hashParams.get("id_token");
 
-    if (googleIdToken) {
-      signInWithGoogleToken(googleIdToken).then(() => {
-        router.push("/"); // giriş başarılı
-      });
-    } else {
-      console.error("Google ID Token alınamadı.");
-      router.push("/auth/login");
-    }
-  }, [router]);
+        if (googleIdToken) {
+            signInWithGoogleToken(googleIdToken).then(() => {
+                router.push("/");
+            });
+        } else {
+            console.error("Google ID Token alınamadı.");
+            router.push("/auth/login");
+        }
+    }, [router]);
 
-  return <p>Giriş yapılıyor...</p>;
+    return (
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="100vh"
+            // bgcolor="#f5f5f5"
+        >
+            <CircularProgress size={60} color="primary" />
+            <Typography variant="h6" mt={3}>
+                Google ile giriş yapılıyor...
+            </Typography>
+            <Typography variant="body2" mt={1} color="textSecondary">
+                Lütfen bekleyin, yönlendiriliyorsunuz...
+            </Typography>
+        </Box>
+    );
 };
 
 export default GoogleCallback;
