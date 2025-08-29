@@ -1,14 +1,17 @@
 {
   "name": "notex",
   "description": "NoteX Applicaton",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "author": "Cüneyd Bölükoğlu",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint",
+    "electron:dev": "concurrently -k \"NODE_ENV=development node server.js\" \"wait-on http://localhost:3000 && NODE_ENV=development electron .\"",
+    "electron:build:mac": "npm run build && electron-builder --mac"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -23,6 +26,7 @@
     "@tiptap/react": "^2.26.1",
     "@tiptap/starter-kit": "^2.26.1",
     "axios": "^1.8.2",
+    "express": "^5.1.0",
     "formik": "^2.4.6",
     "lucide-react": "^0.525.0",
     "next": "15.1.6",
@@ -34,7 +38,30 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "concurrently": "^9.2.1",
+    "electron": "^37.2.6",
+    "electron-builder": "^25.1.8",
     "eslint": "^9",
-    "eslint-config-next": "15.1.6"
+    "eslint-config-next": "15.1.6",
+    "wait-on": "^8.0.4"
+  },
+  "build": {
+    "appId": "com.notex.app",
+    "productName": "NoteX",
+    "asar": true,
+    "files": [
+      "server.js",
+      "electron/**/*",
+      ".next/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity",
+      "identity": null
+    }
   }
 }
