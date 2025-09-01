@@ -40,12 +40,8 @@ import TableHeader from "@tiptap/extension-table-header";
 const ToolbarButton = ({ icon: Icon, onClick, isActive, title, children, className = "" }) => (
   <button
     className={`toolbar-button ${isActive ? 'active' : ''} ${className}`}
-    onMouseDown={(e) => {
-      e.preventDefault(); // Prevent focus loss
-      onClick();
-    }}
+    onClick={onClick}
     title={title}
-    type="button" // Prevent form submission
   >
     {Icon && <Icon size={16} />}
     {children}
@@ -234,7 +230,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-export default function RichTextEditor({
+export default function TextEditor({
   value,
   onChange,
   onBlur,

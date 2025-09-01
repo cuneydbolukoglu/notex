@@ -5,7 +5,7 @@ import { useAllNoteStore, useTagsStore, useArchivedNoteStore } from "@/zustand";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/services/axiosInstance";
 import utils from "@/utils";
-import NoteEditor from "../noteEditor";
+import TextEditor from "../textEditor";
 
 export default function SelectedNote({ selectedNote, archivedNote }) {
     const { removeNote, getNotes } = useAllNoteStore();
@@ -63,7 +63,7 @@ export default function SelectedNote({ selectedNote, archivedNote }) {
     }) => {
         if (isEditing) {
             return (
-                <NoteEditor
+                <TextEditor
                     value={value}
                     onChange={setValue}
                     onBlur={onFinishEdit}

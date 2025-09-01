@@ -6,7 +6,7 @@ import utils from "@/utils";
 import { useAllNoteStore, useTagsStore } from "@/zustand";
 import CustomInput from '@/components/customInput';
 import AutocompleteSelect from '@/components/autoCompleteSelect';
-import NoteEditor from "../noteEditor";
+import TextEditor from "../textEditor";
 
 export default function CreateNote() {
   const { getNotes } = useAllNoteStore();
@@ -86,7 +86,7 @@ export default function CreateNote() {
               <Field name="content">
                 {({ field, form }) => (
                   <>
-                    <NoteEditor
+                    <TextEditor
                       value={field.value}
                       onChange={(val) => form.setFieldValue(field.name, val)}
                     />
