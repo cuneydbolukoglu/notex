@@ -40,22 +40,28 @@ export default function NavBar({ drawerWidth, pageTitle }) {
         setAnchorEl(null);
     };
 
-    const logout = () => {
-        const URL = `https://securetoken.googleapis.com/v1/token?key=${FIREBASE_API_KEY}`;
-
+    const logout = async () => {
         try {
-            const response = axiosInstance.post(URL, {
-                grant_type: "refresh_token",
-                refresh_token: refreshToken
-            }, {
-                headers: { "Content-Type": "application/json" }
+            // Server-side logout - clear HTTP-only cookies
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
             });
+            
+            // Client-side cleanup
+            utils.cookieManager.delete("token");
+            utils.cookieManager.delete("refreshToken");
+            localStorage.removeItem("user");
+            
+            // Redirect to login
+            router.push("/auth/login");
+        } catch (error) {
+            console.error("Logout error:", error);
+            // Even if server logout fails, clear client-side data
             utils.cookieManager.delete("token");
             utils.cookieManager.delete("refreshToken");
             localStorage.removeItem("user");
             router.push("/auth/login");
-        } catch (error) {
-            console.error("Login error:", error);
         }
     };
 

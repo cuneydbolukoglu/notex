@@ -7,27 +7,58 @@ const withAuth = (WrappedComponent) => {
     const router = useRouter();
     const pathname = usePathname();
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-      if (typeof window !== "undefined") {
-        const token = utils.cookieManager.get("token");
-        const isAuthPage = pathname.startsWith("/auth");
-
-        // Token yoksa ve auth sayfasında değilse login'e yönlendir
-        if (!token && !isAuthPage) {
-          router.push("/auth/login");
+      const checkAuth = async () => {
+        if (typeof window !== "undefined") {
+          const isAuthPage = pathname.startsWith("/auth");
+          
+          try {
+            // Server-side token validation
+            const response = await fetch('/api/auth/validate');
+            const data = await response.json();
+            
+            if (data.valid) {
+              setIsAuthenticated(true);
+              // Token geçerli ama auth sayfasındaysa anasayfaya yönlendir
+              if (isAuthPage) {
+                router.push("/");
+              }
+            } else {
+              setIsAuthenticated(false);
+              // Token geçersiz ve auth sayfasında değilse login'e yönlendir
+              if (!isAuthPage) {
+                router.push("/auth/login");
+              }
+            }
+          } catch (error) {
+            console.error("Auth validation error:", error);
+            setIsAuthenticated(false);
+            if (!isAuthPage) {
+              router.push("/auth/login");
+            }
+          }
+          
+          setLoading(false);
         }
+      };
 
-        // Token varsa ama auth sayfasındaysa anasayfaya yönlendir
-        if (token && isAuthPage) {
-          router.push("/");
-        }
+      checkAuth();
+    }, [pathname, router]);
 
-        setLoading(false);
-      }
-    }, [pathname]);
-
-    if (loading) return null;
+    if (loading) {
+      return (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh' 
+        }}>
+          Loading...
+        </div>
+      );
+    }
 
     return <WrappedComponent {...props} />;
   };

@@ -48,8 +48,27 @@ export default function Login() {
     const signInWithGoogle = () => {
         const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
         const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
-        // const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=openid email profile&state=random_string`;
-        const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=id_token%20token&scope=openid%20email%20profile&state=random_string&nonce=random_nonce`;
+        
+        if (!GOOGLE_CLIENT_ID || !REDIRECT_URI) {
+            console.error('Google OAuth configuration missing. Please check your environment variables.');
+            return;
+        }
+
+        // Generate random state and nonce for security
+        const state = Math.random().toString(36).substring(2, 15);
+        const nonce = Math.random().toString(36).substring(2, 15);
+        
+        // Store state in sessionStorage for verification
+        sessionStorage.setItem('oauth_state', state);
+        sessionStorage.setItem('oauth_nonce', nonce);
+
+        const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?` +
+            `client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}&` +
+            `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+            `response_type=id_token&` +
+            `scope=${encodeURIComponent('openid email profile')}&` +
+            `state=${encodeURIComponent(state)}&` +
+            `nonce=${encodeURIComponent(nonce)}`;
 
         window.location.href = GOOGLE_AUTH_URL;
     };

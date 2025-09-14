@@ -10,6 +10,11 @@ const signInWithGoogleToken = async (googleIdToken) => {
     const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
     const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
 
+    if (!FIREBASE_API_KEY) {
+        console.error("Firebase API Key is missing");
+        return null;
+    }
+
     try {
         const URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${FIREBASE_API_KEY}`;
 
@@ -25,16 +30,41 @@ const signInWithGoogleToken = async (googleIdToken) => {
         );
 
         const respData = response?.data;
+        const { idToken, refreshToken, expiresIn } = respData;
 
-        const { idToken, refreshToken } = respData;
+        if (!idToken) {
+            console.error("No ID token received from Firebase");
+            return null;
+        }
 
+        // Session cookie'yi server-side ayarla (HTTP-only)
+        const sessionResponse = await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken, refreshToken, expiresIn })
+        });
+
+        if (!sessionResponse.ok) {
+            console.error("Failed to set session cookie");
+            return null;
+        }
+
+        // Client-side token'ı da set et (fallback için)
         utils.cookieManager.set("token", idToken);
-        utils.cookieManager.set("refreshToken", refreshToken);
-        localStorage.setItem("user", JSON.stringify([{ displayName: respData.displayName, email: respData.email }]));
+        if (refreshToken) {
+            utils.cookieManager.set("refreshToken", refreshToken);
+        }
+
+        // İsteğe bağlı: client-side yardımcı bilgiler
+        localStorage.setItem("user", JSON.stringify([{ 
+            displayName: respData.displayName, 
+            email: respData.email 
+        }]));
 
         return idToken;
     } catch (error) {
         console.error("Firebase Sign-In Error:", error.response?.data || error.message);
+        return null;
     }
 };
 
@@ -43,15 +73,45 @@ const GoogleCallback = () => {
 
     useEffect(() => {
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const googleIdToken = hashParams.get("id_token");
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Check both hash and query parameters for the token
+        const googleIdToken = hashParams.get("id_token") || urlParams.get("id_token");
+        const state = hashParams.get("state") || urlParams.get("state");
+        const error = hashParams.get("error") || urlParams.get("error");
+
+        // Check for OAuth errors
+        if (error) {
+            console.error("Google OAuth Error:", error);
+            router.push("/auth/login?error=oauth_error");
+            return;
+        }
+
+        // Verify state parameter for security
+        const storedState = sessionStorage.getItem('oauth_state');
+        if (state !== storedState) {
+            console.error("State parameter mismatch. Possible CSRF attack.");
+            router.push("/auth/login?error=state_mismatch");
+            return;
+        }
 
         if (googleIdToken) {
-            signInWithGoogleToken(googleIdToken).then(() => {
-                router.push("/");
+            signInWithGoogleToken(googleIdToken).then((token) => {
+                if (token) {
+                    // Clear OAuth state
+                    sessionStorage.removeItem('oauth_state');
+                    sessionStorage.removeItem('oauth_nonce');
+                    router.push("/");
+                } else {
+                    router.push("/auth/login?error=token_exchange_failed");
+                }
+            }).catch((error) => {
+                console.error("Token exchange failed:", error);
+                router.push("/auth/login?error=token_exchange_failed");
             });
         } else {
             console.error("Google ID Token alınamadı.");
-            router.push("/auth/login");
+            router.push("/auth/login?error=no_token");
         }
     }, [router]);
 
